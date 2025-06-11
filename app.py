@@ -54,24 +54,16 @@ if not st.session_state.unzipped:
         st.stop()
 
 # --- CONFIGURAÇÃO DA API GEMINI ---
+api_key = None
+
+# 1. Tentar ler a chave de API dos segredos do Streamlit Cloud
 try:
-    api_key = st.secret('GEMINI_API_KEY')
-
-    if not api_key:
-        st.error("Erro: A chave 'GEMINI_API_KEY' não foi encontrada.")
-        st.stop()
-
-    genai.configure(api_key=api_key)
-
-except FileNotFoundError:
-    st.error("Erro: O arquivo 'config.yaml' não foi encontrado. Por favor, crie-o no mesmo diretório do script.")
-    st.stop()
-except yaml.YAMLError as e:
-    st.error(f"Erro ao ler o arquivo config.yaml. Verifique a formatação YAML: {str(e)}")
-    st.stop()
+    if "GEMINI_API_KEY" in st.secrets:
+        api_key = st.secrets["GEMINI_API_KEY"]
+        st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
 except Exception as e:
-    st.error(f"Erro inesperado ao configurar a API do Gemini: {str(e)}")
-    st.stop()
+        st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
+        st.stop()
 
 def create_llm_forecast_agent(forecast_df, ticker):
     """
