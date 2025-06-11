@@ -63,7 +63,7 @@ try:
     with open(config_file_path, 'r') as config_file:
         config = yaml.safe_load(config_file)
 
-    api_key = config.get('GEMINI_API_KEY')
+    api_key = st.secrets('GEMINI_API_KEY')
 
     if not api_key:
         st.error("Erro: A chave 'GEMINI_API_KEY' não foi encontrada ou está vazia no arquivo config.yaml.")
