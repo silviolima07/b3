@@ -60,7 +60,7 @@ api_key = None
 try:
     if "GEMINI_API_KEY" in st.secrets:
         api_key = st.secrets["GEMINI_API_KEY"]
-        st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
+        #st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
 except Exception as e:
         st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
         st.stop()
