@@ -379,7 +379,7 @@ def main():
         st.markdown("#### Base de Dados:")
         st.markdown("##### https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/series-historicas/")
 
-        st.markdown("### Linkedin:")
+        st.markdown("#### Linkedin:")
         st.markdown("#### [Silvio Lima](https://www.linkedin.com/in/silviocesarlima/)", unsafe_allow_html=True)
 
 if __name__ == '__main__':
