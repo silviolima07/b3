@@ -287,7 +287,7 @@ def main():
     st.write(" ")
     st.markdown("### 📅 Evolução Semanal desde Janeiro/2025")
     st.markdown("### 📈 Previsão para os Próximos Seis Meses (usando Prophet)")
-    st.markdown("### 🧠 Análise e Interpretação feita com IA")
+    st.markdown("### 🧠 Análise e Interpretação das previsões feita por IA")
 
     activities = ["Previsões", "Sobre"]
     choice = st.sidebar.radio("Menu", activities)
