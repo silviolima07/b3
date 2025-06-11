@@ -55,7 +55,7 @@ if not st.session_state.unzipped:
 
 # --- CONFIGURAÇÃO DA API GEMINI ---
 try:
-    api_key = st.secrets('GEMINI_API_KEY')
+    api_key = st.secret('GEMINI_API_KEY')
 
     if not api_key:
         st.error("Erro: A chave 'GEMINI_API_KEY' não foi encontrada.")
