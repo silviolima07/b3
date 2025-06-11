@@ -55,18 +55,10 @@ if not st.session_state.unzipped:
 
 # --- CONFIGURAÇÃO DA API GEMINI ---
 try:
-    config_file_path = 'config.yaml'
-    if not os.path.exists(config_file_path):
-        st.error(f"Erro: O arquivo de configuração '{config_file_path}' não foi encontrado.")
-        st.stop()
-
-    with open(config_file_path, 'r') as config_file:
-        config = yaml.safe_load(config_file)
-
     api_key = st.secrets('GEMINI_API_KEY')
 
     if not api_key:
-        st.error("Erro: A chave 'GEMINI_API_KEY' não foi encontrada ou está vazia no arquivo config.yaml.")
+        st.error("Erro: A chave 'GEMINI_API_KEY' não foi encontrada.")
         st.stop()
 
     genai.configure(api_key=api_key)
