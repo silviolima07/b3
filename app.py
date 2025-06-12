@@ -59,32 +59,16 @@ if not st.session_state.unzipped:
         st.stop()
 
 # --- CONFIGURAÇÃO DA API GEMINI ---
+api_key = None
+
+# 1. Tentar ler a chave de API dos segredos do Streamlit Cloud
 try:
-    config_file_path = 'config.yaml'
-    if not os.path.exists(config_file_path):
-        st.error(f"Erro: O arquivo de configuração '{config_file_path}' não foi encontrado.")
-        st.stop()
-
-    with open(config_file_path, 'r') as config_file:
-        config = yaml.safe_load(config_file)
-
-    api_key = config.get('GEMINI_API_KEY')
-
-    if not api_key:
-        st.error("Erro: A chave 'GEMINI_API_KEY' não foi encontrada ou está vazia no arquivo config.yaml.")
-        st.stop()
-
-    genai.configure(api_key=api_key)
-
-except FileNotFoundError:
-    st.error("Erro: O arquivo 'config.yaml' não foi encontrado. Por favor, crie-o no mesmo diretório do script.")
-    st.stop()
-except yaml.YAMLError as e:
-    st.error(f"Erro ao ler o arquivo config.yaml. Verifique a formatação YAML: {str(e)}")
-    st.stop()
+    if "GEMINI_API_KEY" in st.secrets:
+        api_key = st.secrets["GEMINI_API_KEY"]
+        #st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
 except Exception as e:
-    st.error(f"Erro inesperado ao configurar a API do Gemini: {str(e)}")
-    st.stop()
+        st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
+        st.stop()
 
 def create_llm_forecast_agent(forecast_df, ticker):
     """
@@ -322,6 +306,7 @@ def main():
     st.write(" ")
     st.markdown("### 📅 Evolução Semanal desde Janeiro/2025")
     st.markdown("### 📈 Previsão para os Próximos Seis Meses (usando Prophet)")
+    st.markdown("### 🧠 Análise e Interpretação das previsões feita por IA")
 
     activities = ["Previsões", "Sobre"]
     choice = st.sidebar.radio("Menu", activities)
@@ -441,8 +426,8 @@ def main():
         st.markdown("#### Base de Dados:")
         st.markdown("##### https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/series-historicas/")
 
-        if st.button("LinkedIn: Silvio Lima"):
-            st.markdown("[Conectar no LinkedIn](https://www.linkedin.com/in/silviocesarlima/)", unsafe_allow_html=True)
+        st.markdown("#### Linkedin:")
+        st.markdown("#### [Silvio Lima](https://www.linkedin.com/in/silviocesarlima/)", unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
