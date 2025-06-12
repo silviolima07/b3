@@ -24,8 +24,6 @@ sns.set(rc={'figure.figsize':(16,8)})
 st.set_page_config(page_title="Previsões de Ações B3", layout="wide")
 
 api_key = os.getenv('GEMINI_API_KEY')
-   
-st.write(f"GEMINI_API_KEY: {api_key}") 
 
 # --- Variável para o nome do arquivo TXT e ZIP ---
 txt_file_name = "COTAHIST_A2025.TXT"
@@ -71,8 +69,7 @@ api_key = None
 
 # 1. Tentar ler a chave de API dos segredos do Streamlit Cloud
 try:
-    if "GEMINI_API_KEY" in st.secrets:
-        api_key = st.secrets["GEMINI_API_KEY"]
+        api_key = os.getenv("GEMINI_API_KEY")
         #st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
 except Exception as e:
         st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
