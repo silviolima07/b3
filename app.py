@@ -15,6 +15,12 @@ import google.generativeai as genai
 from scalecast.Forecaster import Forecaster
 import seaborn as sns
 
+from dotenv import load_dotenv
+
+api_key = os.getenv('GEMINI_API_KEY')
+   
+st.write(f"GEMINI_API_KEY: {api_key}") 
+
 sns.set(rc={'figure.figsize':(16,8)})
 
 st.set_page_config(page_title="Previsões de Ações B3", layout="wide")
