@@ -12,11 +12,6 @@ import yaml
 import zipfile # Importar zipfile
 import google.generativeai as genai
 
-from scalecast.Forecaster import Forecaster
-import seaborn as sns
-
-sns.set(rc={'figure.figsize':(16,8)})
-
 st.set_page_config(page_title="Previsões de Ações B3", layout="wide")
 
 # --- Variável para o nome do arquivo TXT e ZIP ---
@@ -171,26 +166,6 @@ def create_llm_forecast_agent(forecast_df, ticker):
 def plot_stock_data(df):
     empresa = df['empresa'].iloc[0] if 'empresa' in df.columns and not df.empty else "Empresa Desconhecida"
     ticker = df['ticker'].iloc[0] if 'ticker' in df.columns and not df.empty else "Ticker Desconhecido"
-    first_date = str(df['ds'].min()).split(' ')[0]
-    last_date = str(df['ds'].max()).split(' ')[0]
-    
-    
-    st.markdown(f"### Empresa: {empresa}")
-    st.markdown("### Período de Dados Históricos")
-    st.write(f"{first_date} a {last_date}")
-    
-    ################################
-    
-    f=Forecaster(y=df['y'],current_dates=df['ds'])
-    f.plot()
-    plt.title(f'{ticker}',size=16)
-    plt.xlabel('Dia da Semana')
-    plt.ylabel('Preço de Fechamento (R$)')
-    plt.savefig("series.png")
-    img = Image.open('series.png')
-    st.image(img)
-
-    #################################
 
     df_diario = df.set_index('ds')[['y']]
     df_semanal = df_diario.resample('W').last()
@@ -203,6 +178,12 @@ def plot_stock_data(df):
                 ha='center', va='bottom',
                 fontsize=11, color='red')
 
+    first_date = str(df['ds'].min()).split(' ')[0]
+    last_date = str(df['ds'].max()).split(' ')[0]
+
+    st.markdown(f"### Empresa: {empresa}")
+    st.markdown("### Período de Dados Históricos")
+    st.write(f"{first_date} a {last_date}")
 
     ax.set_title(f'\n{ticker}\nEvolução Semanal\n', fontsize=14, fontweight='bold')
     ax.set_xlabel('Dia da Semana')
@@ -328,8 +309,6 @@ def main():
 
     # Verifica se os dados B3 foram carregados com sucesso
     b3_stock, lista_stocks_unique = load_and_preprocess_b3_data(serie)
-    
-
 
     if b3_stock.empty:
         st.error("Não foi possível carregar os dados históricos da B3. Verifique o arquivo COTAHIST_A2025.TXT e a configuração.")
@@ -339,8 +318,7 @@ def main():
     if choice == "Previsões":
         st.sidebar.markdown("### Selecione uma Ação")
         selected_stock = st.sidebar.selectbox("Selecione uma ação", lista_stocks_unique, index=0, label_visibility='collapsed', key='stock_selector')
-        
-        
+
         if selected_stock != st.session_state.current_stock_selection:
             st.session_state.processed_data = False
             st.session_state.current_stock_selection = selected_stock
@@ -387,30 +365,6 @@ def main():
                 st.session_state.forecast_result = None
 
         if st.session_state.processed_data and st.session_state.forecast_result is not None:
-            
-            # Teste lib forecaster
-            #data = st.session_state.b3_periodo_for_display.copy()
-            #f=Forecaster(y=data['y'],current_dates=data['ds'])
-            #f.generate_future_dates(180)
-            #f.set_test_length(.2)
-            #f.set_estimator('prophet')
-            #f.manual_forecast(call_me='prophet1')
-            #f.plot_test_set(ci=True,models='prophet1')
-            #plt.title('Default prophet Test Results',size=16)
-            #plt.savefig('teste.png')
-            #teste = Image.open('teste.png')
-            #st.image(teste)
-            
-            #results = f.export('model_summaries')
-            #st.write(results[['TestSetRMSE','InSampleRMSE','TestSetMAPE','InSampleMAPE']])
-            
-            #f.plot(ci=True,models='prophet1')
-            #plt.title('Forecast results',size=16)
-            #plt.savefig('teste2.png')
-            #teste2 = Image.open('teste2.png')
-            #st.image(teste2)
-            
-        
             plot_stock_data(st.session_state.b3_periodo_for_display)
             plot_predictions(
                 st.session_state.current_stock_selection,
