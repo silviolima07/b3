@@ -158,7 +158,6 @@ def plot_stock_data(df):
     first_date = str(df['ds'].min()).split(' ')[0]
     last_date = str(df['ds'].max()).split(' ')[0]
     
-    
     st.markdown(f"### Empresa: {empresa}")
     st.markdown("### Período de Dados Históricos")
     st.write(f"{first_date} a {last_date}")
