@@ -17,11 +17,17 @@ import seaborn as sns
 
 from dotenv import load_dotenv
 
+<<<<<<< HEAD
 load_dotenv()  # carrega variáveis do .env (sem problema se já estiverem setadas)
+=======
+
+>>>>>>> 40253c552871301121c4de063e765b4a716927ec
 
 sns.set(rc={'figure.figsize':(16,8)})
 
 st.set_page_config(page_title="Previsões de Ações B3", layout="wide")
+
+api_key = os.getenv('GEMINI_API_KEY')
 
 # --- Variável para o nome do arquivo TXT e ZIP ---
 txt_file_name = "COTAHIST_A2025.TXT"
@@ -66,6 +72,7 @@ if not st.session_state.unzipped:
 
 # 1. Tentar ler a chave de API dos segredos do Streamlit Cloud
 try:
+<<<<<<< HEAD
     api_key = os.getenv('GEMINI_API_KEY')
     
 except (KeyError, AttributeError, FileNotFoundError):
@@ -73,6 +80,13 @@ except (KeyError, AttributeError, FileNotFoundError):
     st.stop()
 
 #st.write(f'GEMINI_API_KEY:{api_key}')
+=======
+        api_key = os.getenv("GEMINI_API_KEY")
+        #st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
+except Exception as e:
+        st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
+        st.stop()
+>>>>>>> 40253c552871301121c4de063e765b4a716927ec
 
 def create_llm_forecast_agent(forecast_df, ticker):
     """
