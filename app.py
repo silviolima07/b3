@@ -158,6 +158,7 @@ def plot_stock_data(df):
     first_date = str(df['ds'].min()).split(' ')[0]
     last_date = str(df['ds'].max()).split(' ')[0]
     
+    st.write("----------------------------")
     st.markdown(f"### Empresa: {empresa}")
     st.markdown("### Período de Dados Históricos")
     st.write(f"{first_date} a {last_date}")
@@ -418,7 +419,7 @@ def main():
 
 
     elif choice == "Sobre":
-        st.write(" ")
+        st.write("----------------------------")
         st.markdown("#### Dados históricos coletados em b3.com.br.")
         st.markdown("#### - Algoritmo: Prophet")
         st.markdown("#### - Modelo: gemini-1.5-flash")
