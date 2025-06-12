@@ -13,3 +13,4 @@ google-api-core==2.25.0
 google-api-python-client==2.172.0
 google-generativeai==0.8.5
 SCALECAST==0.19.10
+python-dotenv==1.1.0

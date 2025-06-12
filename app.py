@@ -15,6 +15,10 @@ import google.generativeai as genai
 from scalecast.Forecaster import Forecaster
 import seaborn as sns
 
+from dotenv import load_dotenv
+
+load_dotenv()  # carrega variáveis do .env (sem problema se já estiverem setadas)
+
 sns.set(rc={'figure.figsize':(16,8)})
 
 st.set_page_config(page_title="Previsões de Ações B3", layout="wide")
@@ -58,17 +62,17 @@ if not st.session_state.unzipped:
         st.error(f"Ocorreu um erro ao descompactar o arquivo ZIP: {e}")
         st.stop()
 
-# --- CONFIGURAÇÃO DA API GEMINI ---
-api_key = None
+# --- CONFIGURAÇÃO DA API GEMINI --
 
 # 1. Tentar ler a chave de API dos segredos do Streamlit Cloud
 try:
-    if "GEMINI_API_KEY" in st.secrets:
-        api_key = st.secrets["GEMINI_API_KEY"]
-        #st.success("Chave GEMINI_API_KEY carregada dos segredos do Streamlit Cloud.")
-except Exception as e:
-        st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
-        st.stop()
+    api_key = os.getenv('GEMINI_API_KEY')
+    
+except (KeyError, AttributeError, FileNotFoundError):
+    st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
+    st.stop()
+
+#st.write(f'GEMINI_API_KEY:{api_key}')
 
 def create_llm_forecast_agent(forecast_df, ticker):
     """
