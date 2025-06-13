@@ -57,14 +57,17 @@ docker run -d -p 8501:8501 --name b3-app --env-file .env b3-app
 http://localhost:8501
 
 ☁️ Implantação no Streamlit Cloud
-Suba o projeto no GitHub
+### 1. Suba o projeto no GitHub
 
-Acesse Streamlit Cloud
+### 2. Acesse Streamlit Cloud
 
-Crie um novo app apontando para seu repositório
+### 3. Crie um novo app apontando para seu repositório
 
-Vá em Settings > Secrets e adicione:
+### 4. Vá em Settings > Secrets e adicione:
 GEMINI_API_KEY = "sua-chave-aqui"
+
+### 5. Acessar em:
+https://app-b3.streamlit.app/
 
 
 
