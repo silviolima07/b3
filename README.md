@@ -2,6 +2,10 @@
 
 Este é um app interativo construído com [Streamlit](https://streamlit.io/) para consultar dados financeiros da B3 e gerar análises com apoio de inteligência artificial via Gemini API (Google AI).
 
+A série histórica esta disponível no site da b3:
+
+https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/series-historicas/
+
 ---
 
 ## 🚀 Funcionalidades
