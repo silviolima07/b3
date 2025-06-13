@@ -6,11 +6,15 @@ A série histórica esta disponível no site da b3:
 
 https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/series-historicas/
 
+![fig_b3](https://github.com/user-attachments/assets/c798d4de-31bd-4653-aef9-65ce2208b28b)
+
+
 ---
 
 ## 🚀 Funcionalidades
 
 - Consulta de ativos da bolsa brasileira (B3)
+- Previsão dos próximos 6 meses usando o Prophet
 - Análise automática com IA (Google Gemini)
 - Interface simples e interativa via navegador (Streamlit)
 
@@ -20,6 +24,7 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 
 - Python 3.10+
 - Streamlit
+- Prophet
 - Google Gemini API
 - Docker (opcional)
 - `.env` ou `secrets.toml` para chaves de API
