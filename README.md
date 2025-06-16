@@ -9,7 +9,6 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 ![fig_b3](https://github.com/user-attachments/assets/c798d4de-31bd-4653-aef9-65ce2208b28b)
 
 
----
 
 ## 🚀 Funcionalidades
 
@@ -18,7 +17,7 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 - Análise automática com IA (Google Gemini)
 - Interface simples e interativa via navegador (Streamlit)
 
----
+
 
 ## 🛠️ Tecnologias
 
@@ -29,7 +28,7 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 - Docker (opcional)
 - `.env` ou `secrets.toml` para chaves de API
 
----
+
 
 ## ⚙️ Como rodar localmente
 
