@@ -12,6 +12,10 @@ import yaml
 import zipfile # Importar zipfile
 import google.generativeai as genai
 
+from google import genai
+from google.genai import types
+
+
 from scalecast.Forecaster import Forecaster
 import seaborn as sns
 
@@ -73,7 +77,62 @@ except (KeyError, AttributeError, FileNotFoundError):
     st.error(f"Chaves GEMINI_API_KEY nao encontrada: {str(e)}")
     st.stop()
 
+
+import os
+from google import genai
+
+# Inicializa o client usando a chave do Gemini Developer
+api_key = os.getenv('GEMINI_API_KEY')
+client = genai.Client(api_key=api_key)
+
 def create_llm_forecast_agent(forecast_df, ticker):
+    """
+    Cria um agente de IA (LLM) para interpretar o forecast de ações,
+    apresentando os dados chave em uma tabela e uma interpretação separada.
+    """
+    if forecast_df.empty:
+        return "Não há dados de previsão para interpretar."
+
+    first_day_forecast = forecast_df.iloc[0]
+    last_day_forecast = forecast_df.iloc[-1]
+
+    max_yhat_row = forecast_df.loc[forecast_df['yhat'].idxmax()]
+    min_yhat_row = forecast_df.loc[forecast_df['yhat'].idxmin()]
+
+    yhat_max_date_str = max_yhat_row['ds'].strftime('%d/%m/%Y') if isinstance(max_yhat_row['ds'], pd.Timestamp) else 'N/A'
+    yhat_min_date_str = min_yhat_row['ds'].strftime('%d/%m/%Y') if isinstance(min_yhat_row['ds'], pd.Timestamp) else 'N/A'
+
+    trend_direction = "Estável"
+    if last_day_forecast['yhat'] > first_day_forecast['yhat'] * 1.02:
+        trend_direction = "Crescimento acentuado"
+    elif last_day_forecast['yhat'] < first_day_forecast['yhat'] * 0.98:
+        trend_direction = "Queda acentuada"
+
+    forecast_df['interval_width'] = (forecast_df['yhat_upper'].fillna(0) - forecast_df['yhat_lower'].fillna(0)).abs()
+    avg_interval_width = forecast_df['interval_width'].mean()
+    max_interval_width = forecast_df['interval_width'].max()
+
+    # --- Construir o prompt ---
+    prompt = f"""
+    Analise os dados de previsão de preço da ação {ticker} nos próximos 6 meses.
+    Forneça um sumário em tabela e interpretação em 2-3 parágrafos.
+    """
+
+    try:
+        # Usando o modelo disponível para Developer
+        response = client.generate_text(
+            model="gemini-2.5-pro",  # modelo Developer compatível
+            prompt=prompt,
+            temperature=0.3,
+            max_output_tokens=600
+        )
+        return response.text
+
+    except Exception as e:
+        return f"Ocorreu um erro ao gerar a interpretação da IA: {str(e)}"
+
+
+def create_llm_forecast_agent_original(forecast_df, ticker):
     """
     Cria um agente de IA (LLM) para interpretar o forecast de ações,
     apresentando os dados chave em uma tabela e uma interpretação separada.
