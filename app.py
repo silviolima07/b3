@@ -149,7 +149,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
     """
 
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('groq')
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
