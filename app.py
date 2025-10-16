@@ -144,16 +144,11 @@ def create_llm_forecast_agent(forecast_df, ticker):
         #        max_output_tokens=600
         #    )
         #)
-        # Chame o modelo Gemini 1.5 Flash-8B
-        #prompt = "Você é um analista financeiro experiente. Resuma em 2 parágrafos a previsão de preços de ações."
-
-        # Chamando o modelo Gemini 1.5 Flash
-        response = client.generate_text(
+  
+        response = client.models.generate_content(
             model="gemini-1.5-flash-8b",
-            text=prompt,
-            temperature=0.2,
-            max_output_tokens=500
-)
+            contents=prompt
+        )
 
         
         return response.text
