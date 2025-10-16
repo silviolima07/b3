@@ -136,15 +136,25 @@ def create_llm_forecast_agent(forecast_df, ticker):
     """
 
     try:
-        response = client.models.generate_content(
+        #response = client.models.generate_content(
+        #    model="gemini-1.5-flash-8b",
+        #    contents=[prompt],
+        #    config=types.GenerateContentConfig(
+        #        temperature=0.3,
+        #        max_output_tokens=600
+        #    )
+        #)
+        # Chame o modelo Gemini 1.5 Flash-8B
+        response = client.chat.completions.create(
             model="gemini-1.5-flash-8b",
-            contents=[prompt],
-            config=types.GenerateContentConfig(
-                temperature=0.3,
-                max_output_tokens=600
-            )
-        )
-        return response.candidates[0].content
+            messages=[
+                {"role": "system", "content": "Você é um assistente financeiro."},
+               {"role": "user", "content": prompt}
+    ]
+)
+
+        
+        return response.choices[0].message.content
     except Exception as e:
         return f"Erro ao gerar interpretação: {str(e)}"
 
