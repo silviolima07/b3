@@ -145,16 +145,18 @@ def create_llm_forecast_agent(forecast_df, ticker):
         #    )
         #)
         # Chame o modelo Gemini 1.5 Flash-8B
-        response = client.chat.completions.create(
+        #prompt = "Você é um analista financeiro experiente. Resuma em 2 parágrafos a previsão de preços de ações."
+
+        # Chamando o modelo Gemini 1.5 Flash
+        response = client.generate_text(
             model="gemini-1.5-flash-8b",
-            messages=[
-                {"role": "system", "content": "Você é um assistente financeiro."},
-               {"role": "user", "content": prompt}
-    ]
+            text=prompt,
+            temperature=0.2,
+            max_output_tokens=500
 )
 
         
-        return response.choices[0].message.content
+        return response.text
     except Exception as e:
         return f"Erro ao gerar interpretação: {str(e)}"
 
