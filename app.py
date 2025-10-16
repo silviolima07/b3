@@ -137,7 +137,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-pro",
+            model="gemini-1.5-flash-8b",
             contents=[prompt],
             config=types.GenerateContentConfig(
                 temperature=0.3,
