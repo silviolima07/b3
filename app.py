@@ -207,8 +207,10 @@ def gerar_relatorio_analise(ticker, modelo, resultado):
     """Gera conteúdo do relatório sem salvar em disco"""
     
     conteudo = f"""# 📊 Análise de Previsão - {ticker}
+    
+    data = f'{hoje.strftime('%d/%m/%Y')}'
 
-    **Data:** {hoje,strftime("%d/%m/%Y)")}
+    **Data:** {data}
     **Modelo:** {modelo}
     **Ticker:** {ticker}
 
