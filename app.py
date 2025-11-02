@@ -197,20 +197,6 @@ def create_llm_forecast_agent(forecast_df, ticker):
             help="O relatório é gerado sob demanda e não fica armazenado no servidor"
         )
 
-        st.success("✅ Relatório pronto para download!")
-        st.info("💡 O arquivo será gerado no seu computador, não no servidor.")
-        
-        
-        
-        # --- Salvar relatório em ANALISES/ ---
-        os.makedirs("ANALISES", exist_ok=True)
-        file_path = f"ANALISES/{ticker}_analise.md"
-
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write("# Análise da Previsão - " + ticker + "\n\n")
-            f.write(result)
-
-        st.success(f"✅ Relatório salvo em: `{file_path}`")
 
     except Exception as e:
         st.error(f"Erro ao gerar interpretação: {e}")
