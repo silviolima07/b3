@@ -17,3 +17,8 @@ python-dotenv==1.1.0
 google-genai==1.45.0
 yfinance== 0.2.66
 openai==2.6.1
+cmdstanpy==1.2.0
+pystan==3.8.0
+convertdate>=2.4.0
+lunardate>=0.0.9
+stanfordnlp>=0.2.0
