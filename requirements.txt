@@ -16,3 +16,4 @@ SCALECAST==0.19.10
 python-dotenv==1.1.0
 google-genai==1.45.0
 yfinance== 0.2.66
+openai==2.6.1
