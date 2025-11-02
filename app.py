@@ -186,8 +186,9 @@ def create_llm_forecast_agent(forecast_df, ticker):
         result = response.choices[0].message.content
 
         # Gerar e oferecer download
-        relatorio = gerar_relatorio_analise(ticker, modelo, result)
-        #st.write('Data:', hoje.strftime('%d/%m/%Y'))
+        data = hoje.strftime('%d/%m/%Y')
+        relatorio = gerar_relatorio_analise(data, ticker, modelo, result)
+        
 
         st.download_button(
             label="📥 Baixar Relatório Completo",
@@ -203,12 +204,10 @@ def create_llm_forecast_agent(forecast_df, ticker):
 
 
  
-def gerar_relatorio_analise(ticker, modelo, resultado):
+def gerar_relatorio_analise(data, ticker, modelo, resultado):
     """Gera conteúdo do relatório sem salvar em disco"""
     
     conteudo = f"""# 📊 Análise de Previsão - {ticker}
-    
-    data = f'{datetime.date.today().strftime('%d/%m/%Y')}
 
     **Data:** {data}
     **Modelo:** {modelo}
