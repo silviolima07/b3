@@ -188,6 +188,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
 
         # Gerar e oferecer download
         relatorio = gerar_relatorio_analise(ticker, modelo, result)
+        st.write('Data:', hoje)
 
         st.download_button(
             label="📥 Baixar Relatório Completo",
