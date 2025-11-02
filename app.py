@@ -1,83 +1,84 @@
 import os
-import streamlit as st
+import re
+import datetime
 import pandas as pd
-from PIL import Image
-import zipfile
+import yfinance as yf
+import streamlit as st
 from prophet import Prophet
-import matplotlib.pyplot as plt
 from google import genai
 from google.genai import types
+
 from dotenv import load_dotenv
 
-# --- Configurações ---
-st.set_page_config(page_title="Previsões de Ações B3", layout="wide")
 load_dotenv()
-API_KEY = os.getenv('GEMINI_API_KEY')
-client = genai.Client(api_key=API_KEY)
 
-# --- Arquivos ---
-txt_file_name = "COTAHIST_A2025.TXT"
-zip_file_name = "COTAHIST_A2025.zip"
-extract_to_path = './'
+import os
+import openai
 
-# --- Upload / Extração do TXT ---
-if 'unzipped' not in st.session_state:
-    st.session_state.unzipped = False
 
-if not st.session_state.unzipped:
-    os.makedirs(extract_to_path, exist_ok=True)
-    try:
-        if not os.path.exists(zip_file_name):
-            st.error(f"Arquivo ZIP '{zip_file_name}' não encontrado.")
-            st.stop()
+openai.api_key = os.getenv("GROQ_API_KEY")
+openai.api_base = "https://api.groq.com/openai/v1"
 
-        with zipfile.ZipFile(zip_file_name, 'r') as zip_ref:
-            if txt_file_name in zip_ref.namelist():
-                zip_ref.extract(txt_file_name, extract_to_path)
-                st.session_state.unzipped = True
-            else:
-                st.error(f"Arquivo '{txt_file_name}' não encontrado no ZIP.")
-                st.stop()
-    except Exception as e:
-        st.error(f"Erro ao descompactar ZIP: {e}")
-        st.stop()
 
-# --- Carregar e pré-processar dados da B3 ---
+
+# =============================
+# Configurações do Streamlit
+# =============================
+st.set_page_config(page_title="Histórico de Ações B3", layout="centered")
+st.title("📊 Histórico de Ações da B3")
+#st.markdown("#### O app lê automaticamente o arquivo local COTAHIST.")
+st.markdown("#### Coleta o histórico atualizado do ticker via Yahoo Finance.")
+
+modelo = "llama-3.3-70b-versatile"
+
+inicio = "2025-01-01"
+hoje = datetime.date.today().strftime("%Y-%m-%d")
+
+st.markdown("### Periodo")
+st.markdown("#### Inicio: "+ inicio)
+st.markdown("#### Final: " + hoje)
+
+# =============================
+# Função para localizar arquivo
+# =============================
+
+pasta = "txt"
+
+def localizar_arquivo_cotahist():
+    """
+    Localiza o arquivo mais recente COTAHIST_*.TXT dentro da pasta ./txt
+    """
+    #pasta = "txt"
+    if not os.path.exists(pasta):
+        os.makedirs(pasta)
+        return None
+
+    arquivos = [arq for arq in os.listdir(pasta) if arq.upper().startswith("COTAHIST_") and arq.lower().endswith(".txt")]
+    if not arquivos:
+        return None
+
+    # Pega o mais recente (pelo ano)
+    arquivos.sort(reverse=True)
+    st.write("Arquivo lido:", arquivos[0])
+    return os.path.join(pasta, arquivos[0])
+
+# =============================
+# Função para extrair tickers
+# =============================
 @st.cache_data
-def load_and_preprocess_b3_data(file_path):
-    try:
-        from b3fileparser.b3parser import B3Parser
-        parser = B3Parser.create_parser(engine='polars')
-        dados_b3 = parser.read_b3_file(file_path)
-        b3 = dados_b3.to_pandas()
-
-        b3_stock_df = b3.loc[
-            (b3.CODIGO_BDI == 'LOTE_PADRAO') & (b3.TIPO_DE_MERCADO == 'VISTA'),
-            ['DATA_DO_PREGAO','PRECO_ULTIMO_NEGOCIO','CODIGO_DE_NEGOCIACAO','NOME_DA_EMPRESA']
-        ].copy()
-        b3_stock_df.rename(columns={
-            'DATA_DO_PREGAO':'ds',
-            'PRECO_ULTIMO_NEGOCIO':'y',
-            'CODIGO_DE_NEGOCIACAO':'ticker',
-            'NOME_DA_EMPRESA':'empresa'
-        }, inplace=True)
-
-        b3_stock_df['ds'] = pd.to_datetime(b3_stock_df['ds'], format='%Y%m%d', errors='coerce')
-        b3_stock_df['y'] = pd.to_numeric(b3_stock_df['y'], errors='coerce')
-        b3_stock_df['ticker'] = b3_stock_df['ticker'].str.strip()
-        b3_stock_df.dropna(subset=['ds','y'], inplace=True)
-
-        unique_tickers = sorted(list(b3_stock_df.ticker.unique()))
-        return b3_stock_df, unique_tickers
-
-    except Exception as e:
-        st.error(f"Erro ao processar dados da B3: {e}")
-        return pd.DataFrame(), []
-
-b3_stock, lista_stocks_unique = load_and_preprocess_b3_data(txt_file_name)
-if b3_stock.empty:
-    st.error("Não foi possível carregar dados históricos da B3.")
-    st.stop()
+def extrair_tickers_b3(caminho_txt):
+    tickers = set()
+    with open(caminho_txt, "r", encoding="latin1") as f:
+        for linha in f:
+            if linha.startswith("01"):
+                # pega 12 caracteres da posição correta (12 a 23)
+                ticker = linha[12:24].strip()
+                #st.write("Ticker:", ticker)
+                # valida: pelo menos 4 letras + pelo menos 1 número
+                if re.match(r"^[A-Z]{2,5}\d{1,2}[A-Z]?$", ticker):
+                    tickers.add(ticker)
+                    #st.write("Tickers:", tickers)
+    return sorted(tickers)
 
 # --- Função de previsão com Prophet ---
 def predict_stock(df_input):
@@ -88,12 +89,14 @@ def predict_stock(df_input):
         hist['ds'] = pd.to_datetime(hist['ds'])
         m = Prophet(daily_seasonality=True)
         m.fit(hist)
-        future = m.make_future_dataframe(periods=6, freq='M')
-        forecast = m.predict(future)
-        return forecast, m, hist
+        futuro = m.make_future_dataframe(periods=180)
+        forecast = m.predict(futuro)
+        return forecast,m,hist
     except Exception as e:
         st.error(f"Erro ao prever dados: {e}")
         return None, None, None
+        
+
 
 # --- Função de plotagem ---
 def plot_predictions(ticker, forecast, model, hist):
@@ -104,21 +107,29 @@ def plot_predictions(ticker, forecast, model, hist):
     fig1 = model.plot(forecast)
     st.pyplot(fig1)
     fig2 = model.plot_components(forecast)
-    st.pyplot(fig2)
+    st.pyplot(fig2)       
 
-# --- Função de interpretação IA usando Gemini Developer ---
+
 def create_llm_forecast_agent(forecast_df, ticker):
+    """
+    Cria um agente Groq para interpretar apenas a previsão futura do Prophet (180 dias após a data atual).
+    """
     if forecast_df.empty:
         return "Não há dados de previsão para interpretar."
 
-    first_day_forecast = forecast_df.iloc[0]
-    last_day_forecast = forecast_df.iloc[-1]
+    hoje = pd.Timestamp.today().normalize()
+    previsao_futura = forecast_df[forecast_df['ds'] > hoje].copy()
 
-    max_yhat_row = forecast_df.loc[forecast_df['yhat'].idxmax()]
-    min_yhat_row = forecast_df.loc[forecast_df['yhat'].idxmin()]
+    if previsao_futura.empty:
+        return "Nenhuma previsão futura encontrada (verifique o forecast)."
 
-    yhat_max_date_str = max_yhat_row['ds'].strftime('%d/%m/%Y') if isinstance(max_yhat_row['ds'], pd.Timestamp) else 'N/A'
-    yhat_min_date_str = min_yhat_row['ds'].strftime('%d/%m/%Y') if isinstance(min_yhat_row['ds'], pd.Timestamp) else 'N/A'
+    first_day_forecast = previsao_futura.iloc[0]
+    last_day_forecast = previsao_futura.iloc[-1]
+    max_yhat_row = previsao_futura.loc[previsao_futura['yhat'].idxmax()]
+    min_yhat_row = previsao_futura.loc[previsao_futura['yhat'].idxmin()]
+
+    yhat_max_date_str = max_yhat_row['ds'].strftime('%d/%m/%Y')
+    yhat_min_date_str = min_yhat_row['ds'].strftime('%d/%m/%Y')
 
     trend_direction = "Estável"
     if last_day_forecast['yhat'] > first_day_forecast['yhat'] * 1.02:
@@ -126,52 +137,136 @@ def create_llm_forecast_agent(forecast_df, ticker):
     elif last_day_forecast['yhat'] < first_day_forecast['yhat'] * 0.98:
         trend_direction = "Queda acentuada"
 
-    forecast_df['interval_width'] = (forecast_df['yhat_upper'].fillna(0) - forecast_df['yhat_lower'].fillna(0)).abs()
-    avg_interval_width = forecast_df['interval_width'].mean()
-    max_interval_width = forecast_df['interval_width'].max()
+    previsao_futura['interval_width'] = (
+        previsao_futura['yhat_upper'] - previsao_futura['yhat_lower']
+    ).abs()
+    avg_interval_width = previsao_futura['interval_width'].mean()
+    max_interval_width = previsao_futura['interval_width'].max()
 
+    # --- Construir prompt apenas com o período futuro ---
     prompt = f"""
-    Analise os dados de previsão da ação {ticker} para os próximos 6 meses.
-    Forneça sumário em tabela Markdown e interpretação em 2-3 parágrafos em Português.
+    Você é um analista financeiro especializado em ações da B3.
+    Analise as previsões futuras da ação {ticker} geradas pelo modelo Prophet.
+
+    Período da previsão: {first_day_forecast['ds'].strftime('%d/%m/%Y')} a {last_day_forecast['ds'].strftime('%d/%m/%Y')}
+    Tendência geral: {trend_direction}
+    Máximo previsto: R$ {max_yhat_row['yhat']:.2f} em {yhat_max_date_str}
+    Mínimo previsto: R$ {min_yhat_row['yhat']:.2f} em {yhat_min_date_str}
+    Intervalo médio de confiança: R$ {avg_interval_width:.2f}
+    Intervalo máximo de confiança: R$ {max_interval_width:.2f}
+
+    Gere um relatório em português, com:
+    1- Titulo do relatório: Análise da Ação - incluir o ticker.
+    2. Uma tabela em Markdown com os valores acima.
+    3. Uma análise textual em 2-3 parágrafos explicando a tendência, possíveis riscos e incertezas.
     """
 
     try:
-        #response = client.models.generate_content(
-        #    model="gemini-1.5-flash",
-        #    contents=[prompt],
-        #    config=types.GenerateContentConfig(
-        #        temperature=0.3,
-        #        max_output_tokens=600
-        #    )
-        #)
-  
-        response = client.models.generate_content(
-            model="gemini-1.5-flash-8b",
-            contents=prompt
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=os.getenv("GROQ_API_KEY"),
+            base_url="https://api.groq.com/openai/v1"
         )
 
-        
-        return response.text
-    except Exception as e:
-        return f"Erro ao gerar interpretação: {str(e)}"
+        response = client.chat.completions.create(
+            model=f'{modelo}',
+            messages=[
+                {"role": "system", "content": "Você é um analista financeiro técnico e objetivo."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=700
+        )
 
-# --- Streamlit UI ---
-st.sidebar.title("Menu")
-choice = st.sidebar.radio("Opções", ["Previsões", "Sobre"])
-
-if choice == "Previsões":
-    selected_stock = st.sidebar.selectbox("Selecione uma ação", lista_stocks_unique)
-    b3_periodo = b3_stock[b3_stock.ticker == selected_stock].sort_values(by='ds')
-
-    if st.sidebar.button("Processar"):
-        forecast, model, hist = predict_stock(b3_periodo)
-        plot_predictions(selected_stock, forecast, model, hist)
-
-        st.markdown("### Interpretação da IA")
-        interpretation = create_llm_forecast_agent(forecast, selected_stock)
-        st.write(interpretation)
+        result = response.choices[0].message.content
+        st.markdown("### 📈 Interpretação da Previsão (Groq LLM)")
+        st.markdown(f"### Modelo: {modelo}")
+        st.markdown(result)
         st.warning("Disclaimer: Interpretação gerada por IA, não é aconselhamento financeiro.")
+        
+        # --- Salvar relatório em ANALISES/ ---
+        os.makedirs("ANALISES", exist_ok=True)
+        file_path = f"ANALISES/{ticker}_analise.md"
 
-elif choice == "Sobre":
-    st.markdown("#### Dados históricos coletados em b3.com.br")
-    st.markdown("#### Modelo Prophet + Gemini Developer API")
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("# Análise da Previsão - " + ticker + "\n\n")
+            f.write(result)
+
+        st.success(f"✅ Relatório salvo em: `{file_path}`")
+
+    except Exception as e:
+        st.error(f"Erro ao gerar interpretação: {e}")
+
+
+        
+    
+    
+# =============================
+# Localiza e processa arquivo
+# =============================
+arquivo_txt = localizar_arquivo_cotahist()
+
+if arquivo_txt is None:
+    st.error("⚠️ Nenhum arquivo encontrado em `./txt`. Coloque o arquivo COTAHIST_AAAAA.TXT nessa pasta.")
+    st.stop()
+# Tickers extraidos do arquivo txt
+#st.info(f"Usando o arquivo: **{pasta}\{os.path.basename(arquivo_txt)}**")
+
+lista_tickers = extrair_tickers_b3(arquivo_txt)
+
+if not lista_tickers:
+    st.error("Não foi possível extrair tickers válidos do arquivo.")
+    st.stop()
+
+# =============================
+# Interface principal
+# =============================
+ticker_escolhido = st.selectbox("Selecione o ticker:", lista_tickers)
+
+if st.button("ANALISE"):
+
+    if ticker_escolhido:
+        st.info(f"Buscando histórico do ticker via Yahoo Finance...")
+
+        inicio = "2025-01-01"
+        hoje = datetime.date.today().strftime("%Y-%m-%d")
+        dados = yf.download(f"{ticker_escolhido}.SA", start=inicio, end=hoje)
+
+        if not dados.empty:
+            # Se houver MultiIndex, "flatten" para usar só os nomes principais
+            if isinstance(dados.columns, pd.MultiIndex):
+                dados.columns = [col[0] for col in dados.columns]
+
+            # Seleciona apenas colunas de interesse
+            colunas_principais = ["Open", "High", "Low", "Close", "Volume"]
+            dados_proph = dados[colunas_principais].copy()
+            st.markdown("### 📅 Últimas cotações:")
+            st.dataframe(dados_proph[colunas_principais].tail())
+            
+            tamanho = dados_proph.shape[0]
+            
+            if tamanho > 10:
+
+                # Transforma o index (Date) em coluna 'ds'
+                st.markdown("### Dataset Prophet")
+                dados_proph.reset_index(inplace=True)
+                dados_proph.rename(columns={"Date": "ds", 'Close': 'y'}, inplace=True)
+                dados_proph['ticker'] = ticker_escolhido
+                dados_proph = dados_proph[['ticker', 'ds','y']]
+                inicio = dados_proph.iloc[0]
+                st.write("Inicio:", inicio['ds'].strftime("%d-%m-%Y"))
+                fim = dados_proph.iloc[-1]
+                st.write("Fim:", fim['ds'].strftime("%d-%m-%Y"))
+                st.dataframe(dados_proph.tail())
+                
+                forecast_df, model, hist = predict_stock(dados_proph)
+                plot_predictions(ticker_escolhido, forecast_df, model, hist)
+                
+                # Previsao interpretada pelo agente
+                create_llm_forecast_agent(forecast_df, ticker_escolhido)
+            else:
+                st.markdown("### Ticker com poucos dados.")
+                st.error("Dados insuficientes")            
+          
+        else:
+            st.error("⚠️ Não foi possível obter dados do Yahoo Finance para esse ticker.")
