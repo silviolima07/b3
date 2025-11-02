@@ -44,11 +44,10 @@ st.markdown("#### Final: " + hoje)
 
 pasta = "txt"
 
-def localizar_arquivo_cotahist():
+def localizar_arquivo_cotahist(pasta):
     """
     Localiza o arquivo mais recente COTAHIST_*.TXT dentro da pasta ./txt
     """
-    #pasta = "txt"
     if not os.path.exists(pasta):
         os.makedirs(pasta)
         return None
@@ -227,7 +226,7 @@ def gerar_relatorio_analise(ticker, modelo, resultado):
 # =============================
 # Localiza e processa arquivo
 # =============================
-arquivo_txt = localizar_arquivo_cotahist()
+arquivo_txt = localizar_arquivo_cotahist(pasta)
 
 if arquivo_txt is None:
     st.error("⚠️ Nenhum arquivo encontrado em `./txt`. Coloque o arquivo COTAHIST_AAAAA.TXT nessa pasta.")
