@@ -184,6 +184,30 @@ def create_llm_forecast_agent(forecast_df, ticker):
         st.markdown(result)
         st.warning("Disclaimer: Interpretação gerada por IA, não é aconselhamento financeiro.")
         
+        result = response.choices[0].message.content
+
+        # Exibir análise
+        st.markdown("### 📈 Interpretação da Previsão (Groq LLM)")
+        st.markdown(f"### Modelo: {modelo}")
+        st.markdown(result)
+        st.warning("Disclaimer: Interpretação gerada por IA, não é aconselhamento financeiro.")
+
+        # Gerar e oferecer download
+        relatorio = gerar_relatorio_analise(ticker, modelo, result)
+
+        st.download_button(
+            label="📥 Baixar Relatório Completo",
+            data=relatorio,
+            file_name=f"analise_{ticker}_{datetime.now().strftime('%Y%m%d_%H%M')}.md",
+            mime="text/markdown",
+            help="O relatório é gerado sob demanda e não fica armazenado no servidor"
+        )
+
+        st.success("✅ Relatório pronto para download!")
+        st.info("💡 O arquivo será gerado no seu computador, não no servidor.")
+        
+        
+        
         # --- Salvar relatório em ANALISES/ ---
         os.makedirs("ANALISES", exist_ok=True)
         file_path = f"ANALISES/{ticker}_analise.md"
@@ -198,7 +222,25 @@ def create_llm_forecast_agent(forecast_df, ticker):
         st.error(f"Erro ao gerar interpretação: {e}")
 
 
-        
+ 
+def gerar_relatorio_analise(ticker, modelo, resultado):
+    """Gera conteúdo do relatório sem salvar em disco"""
+    
+    conteudo = f"""# 📊 Análise de Previsão - {ticker}
+
+    **Data:** {datetime.now().strftime('%d/%m/%Y %H:%M')}
+    **Modelo:** {modelo}
+    **Ticker:** {ticker}
+
+    ## 📈 Interpretação da Previsão
+
+    {resultado}
+
+    ---
+    *Relatório gerado automaticamente - Para fins educacionais*
+    *Arquivo não é armazenado no servidor*
+    """
+    return conteudo 
     
     
 # =============================
