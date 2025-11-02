@@ -1,7 +1,7 @@
 matplotlib==3.10.3
 Pillow==11.2.1
 streamlit==1.45.1
-prophet==1.1.4
+prophet>=1.1.5
 bokeh==2.4.3
 holidays>=0.25
 numpy<2.0
