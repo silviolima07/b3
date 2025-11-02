@@ -186,19 +186,13 @@ def create_llm_forecast_agent(forecast_df, ticker):
         
         result = response.choices[0].message.content
 
-        # Exibir análise
-        st.markdown("### 📈 Interpretação da Previsão (Groq LLM)")
-        st.markdown(f"### Modelo: {modelo}")
-        st.markdown(result)
-        st.warning("Disclaimer: Interpretação gerada por IA, não é aconselhamento financeiro.")
-
         # Gerar e oferecer download
         relatorio = gerar_relatorio_analise(ticker, modelo, result)
 
         st.download_button(
             label="📥 Baixar Relatório Completo",
             data=relatorio,
-            file_name=f"analise_{ticker}_{datetime.now().strftime('%Y%m%d_%H%M')}.md",
+            file_name=f"analise_{ticker}_{hoje}.md",
             mime="text/markdown",
             help="O relatório é gerado sob demanda e não fica armazenado no servidor"
         )
