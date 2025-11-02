@@ -222,7 +222,7 @@ def gerar_relatorio_analise(ticker, modelo, resultado):
     
     conteudo = f"""# 📊 Análise de Previsão - {ticker}
 
-    **Data:** {datetime.now().strftime('%d/%m/%Y %H:%M')}
+    **Data:** {hoje}
     **Modelo:** {modelo}
     **Ticker:** {ticker}
 
