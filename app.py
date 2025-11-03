@@ -28,7 +28,7 @@ st.set_page_config(page_title="Histórico de Ações B3", layout="centered")
 st.title("📊 Histórico de Ações da B3")
 #st.markdown("#### O app lê automaticamente o arquivo local COTAHIST.")
 st.markdown("#### Coleta o histórico atualizado do ticker via Yahoo Finance.")
-st.markdown("#### Com o prophet faz uma previsão dos próximos 180 dias.")
+st.markdown("#### Com o prophet, faz uma previsão dos próximos 180 dias.")
 
 modelo = "llama-3.3-70b-versatile"
 
@@ -160,42 +160,8 @@ def create_llm_forecast_agent(forecast_df, ticker):
     1- Titulo do relatório: Análise da Ação - incluir o ticker.
     2. Uma tabela em Markdown com os valores acima. Colunas Categoria e Valor.
     3. Uma análise textual em 2-3 parágrafos explicando a tendência, possíveis riscos e incertezas.
-    4. Use o seguinte modelo de estrutura:
-    # 📊 Análise de Previsão - USIM3
+    """
 
-    **Data:** 03/11/2025
-    **Modelo:** llama-3.3-70b-versatile
-    **Ticker:** USIM3
-
-    ## 📈 Interpretação da Previsão
-
-    # Análise da Ação - USIM3
-
-    Abaixo, segue uma tabela com as previsões futuras da ação USIM3 geradas pelo modelo Prophet:
-
-    |      Categoria        |         Valor           |
-    | ----------------------| ----------------------- |
-    | Período da previsão   | 04/11/2025 a 29/04/2026 |
-    | Tendência geral       | Crescimento acentuado   |
-    | Máximo previsto       | R$ 6.35 em 26/04/2026   |
-    | Mínimo previsto       | R$ 4.93 em 04/11/2025   |
-    | Intervalo médio de confiança | R$ 1.61          |
-    | Intervalo máximo de confiança | R$ 3.66         |
-
-    A análise das previsões futuras da ação USIM3 indica um cenário de crescimento acentuado no período de 04/11/2025 a 29/04/2026. 
-
-    O modelo Prophet prevê um máximo de R$ 6.35 em 26/04/2026, o que sugere um potencial de alta significativa para os investidores. No entanto, é importante considerar os riscos e incertezas inerentes a qualquer investimento em ações. O intervalo médio de confiança de R$ 1.61 e o intervalo máximo de confiança de R$ 3.66 indicam que há uma margem de erro nas previsões, o que pode afetar o desempenho real da ação.
-
-    Além disso, é fundamental lembrar que as previsões baseadas em modelos estatísticos, como o Prophet, são apenas uma ferramenta para auxiliar na tomada de decisões de investimento. Outros fatores, como a saúde financeira da empresa, o setor em que atua, a concorrência e as condições econômicas gerais, também devem ser considerados. Portanto, é recomendável que os investidores realizem uma análise mais aprofundada e diversificada antes de tomar qualquer decisão de investimento na ação USIM3.
-
-    Em resumo, as previsões para a ação USIM3 sugerem um cenário promissor, mas é essencial manter uma visão crítica e considerar os possíveis riscos e incertezas. Investidores devem estar preparados para ajustar suas estratégias de acordo com as mudanças no mercado e nas condições econômicas, garantindo assim uma abordagem mais segura e informada para seus investimentos.
-    ---
-    *Relatório gerado automaticamente - Para fins educacionais*
-    *Arquivo não é armazenado no servidor*
-    ---
-        """
-    
-    
     try:
         from openai import OpenAI
         client = OpenAI(
@@ -216,7 +182,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
         result = response.choices[0].message.content
         st.markdown("### 📈 Interpretação da Previsão (Groq LLM)")
         st.markdown(f"### Modelo: {modelo}")
-        st.markdown(result, unsafe_allow_html=False)
+        st.markdown(result)
         st.warning("Disclaimer: Interpretação gerada por IA, não é aconselhamento financeiro.")
         
         result = response.choices[0].message.content
@@ -232,7 +198,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
             label="📥 Baixar Relatório Completo",
             data=conteudo_bytes,
             file_name=f"analise_{ticker}_{hoje.strftime('%d/%m/%Y')}.md",
-            mime="text/markdown; charset=utf-8-sig"
+            mime="text/markdown; charset=utf-8"
             #help="O relatório é gerado sob demanda e não fica armazenado no servidor"
         )
 
@@ -258,7 +224,7 @@ def gerar_relatorio_analise(data, ticker, modelo, resultado):
     ---
     *Relatório gerado automaticamente - Para fins educacionais*
     *Arquivo não é armazenado no servidor*
-    
+    """
     return conteudo 
     
     
