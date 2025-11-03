@@ -230,6 +230,7 @@ def gerar_relatorio_analise(data, ticker, modelo, resultado):
 # Localiza e processa arquivo
 # =============================
 arquivo_txt = localizar_arquivo_cotahist(pasta)
+st.write(arquivo_txt)
 
 if arquivo_txt is None:
     st.error("⚠️ Nenhum arquivo encontrado em `./txt`. Coloque o arquivo COTAHIST_AAAAA.TXT nessa pasta.")
