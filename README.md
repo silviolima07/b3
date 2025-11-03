@@ -1,6 +1,8 @@
 # 📈 B3 App - Consulta de Dados da Bolsa com IA
 
-Este é um app interativo construído com [Streamlit](https://streamlit.io/) para consultar dados financeiros da B3  e  gerar análises com um modelo do GROQ: llama-3.3-70b-versatile.
+Este é um app interativo construído com [Streamlit](https://streamlit.io/) para consultar dados financeiros da B3  e  gerar análises com um modelo do GROQ.
+
+Modelo: llama-3.3-70b-versatile.
 
 A série histórica é obtida via API YFinance.
 
