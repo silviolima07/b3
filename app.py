@@ -258,7 +258,7 @@ def gerar_relatorio_analise(data, ticker, modelo, resultado):
     ---
     *Relatório gerado automaticamente - Para fins educacionais*
     *Arquivo não é armazenado no servidor*
-    """
+    
     return conteudo 
     
     
