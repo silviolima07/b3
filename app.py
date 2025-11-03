@@ -19,8 +19,6 @@ import openai
 openai.api_key = os.getenv("GROQ_API_KEY")
 openai.api_base = "https://api.groq.com/openai/v1"
 
-
-
 # =============================
 # Configurações do Streamlit
 # =============================
