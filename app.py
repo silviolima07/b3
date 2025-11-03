@@ -56,10 +56,11 @@ def localizar_arquivo_cotahist(pasta):
     if not arquivos:
         return None
 
-    # Pega o mais recente (pelo ano)
-    arquivos.sort(reverse=True)
-    #st.write("Arquivo lido:", arquivos[0])
-    return os.path.join(pasta, arquivos[0])
+    else:
+        # Pega o mais recente (pelo ano)
+        arquivos.sort(reverse=True)
+        #st.write("Arquivo lido:", arquivos[0])
+        return os.path.join(pasta, arquivos[0])
 
 # =============================
 # Função para extrair tickers
