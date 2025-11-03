@@ -160,6 +160,24 @@ def create_llm_forecast_agent(forecast_df, ticker):
     1- Titulo do relatório: Análise da Ação - incluir o ticker.
     2. Uma tabela em Markdown com os valores acima. Colunas Categoria e Valor.
     3. Uma análise textual em 2-3 parágrafos explicando a tendência, possíveis riscos e incertezas.
+    4. Use o seguinte modelo de estrutura:
+
+# 📊 Análise de Previsão - {ticker}
+**Data:** {hoje.strftime('%d/%m/%Y')}
+**Modelo:** {modelo}
+**Ticker:** {ticker}
+
+## 📈 Interpretação da Previsão
+| Categoria  | Valor |
+|------------|--------|
+| Período da previsão | ... |
+| Tendência geral     | ... |
+| Máximo previsto     | ... |
+| Mínimo previsto     | ... |
+| Intervalo médio de confiança | ... |
+| Intervalo máximo de confiança | ... |
+
+Análise textual...
     """
 
     try:
