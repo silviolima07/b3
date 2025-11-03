@@ -7,7 +7,7 @@ import streamlit as st
 from prophet import Prophet
 from google import genai
 from google.genai import types
-
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -47,7 +47,7 @@ pasta = "txt"
 
 def localizar_arquivo_cotahist(pasta):
     """
-    Localiza o arquivo mais recente COTAHIST_*.TXT dentro da pasta ./txt
+    Localiza o arquivo mais recente COTAHIST_*.TXT dentro da pasta  txt
     """
     if not os.path.exists(pasta):
         os.makedirs(pasta)
@@ -231,11 +231,12 @@ def gerar_relatorio_analise(data, ticker, modelo, resultado):
 # =============================
 # Localiza e processa arquivo
 # =============================
+time.sleep(3)
 arquivo_txt = localizar_arquivo_cotahist(pasta)
 #st.write(arquivo_txt)
 
 if arquivo_txt is None:
-    st.error("⚠️ Nenhum arquivo encontrado em `./txt`. Coloque o arquivo COTAHIST_AAAAA.TXT nessa pasta.")
+    st.error("⚠️ Nenhum arquivo encontrado no diretorio  `txt`. Coloque o arquivo COTAHIST_AAAAA.TXT nessa pasta.")
     st.stop()
 # Tickers extraidos do arquivo txt
 #st.info(f"Usando o arquivo: **{pasta}\{os.path.basename(arquivo_txt)}**")
