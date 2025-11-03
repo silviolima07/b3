@@ -208,6 +208,22 @@ def create_llm_forecast_agent(forecast_df, ticker):
     except Exception as e:
         st.error(f"Erro ao gerar interpretação: {e}")
 
+import unicodedata
+import re
+
+def limpar_texto_markdown(texto):
+    """Remove caracteres invisíveis e normaliza texto para exibição no Streamlit."""
+    # Remove caracteres de controle (soft breaks, zero width spaces, etc.)
+    texto = re.sub(r'[\u200b-\u200f\u2028-\u202f\u2060-\u206f\ufeff]', '', texto)
+    # Normaliza acentuação
+    texto = unicodedata.normalize('NFC', texto)
+    # Remove múltiplas quebras de linha desnecessárias
+    texto = re.sub(r'\n{3,}', '\n\n', texto)
+    # Substitui quebras incorretas entre letras (letras espaçadas)
+    texto = re.sub(r'(?<=\w)\s+\n\s+(?=\w)', ' ', texto)
+    # Corrige vírgulas e pontos quebrados
+    texto = texto.replace('\n,', ',').replace('\n.', '.')
+    return texto.strip()
 
  
 def gerar_relatorio_analise(data, ticker, modelo, resultado):
