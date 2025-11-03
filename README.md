@@ -1,12 +1,8 @@
 # 📈 B3 App - Consulta de Dados da Bolsa com IA
 
-Este é um app interativo construído com [Streamlit](https://streamlit.io/) para consultar dados financeiros da B3 e gerar análises com apoio de inteligência artificial via Gemini API (Google AI).
+Este é um app interativo construído com [Streamlit](https://streamlit.io/) para consultar dados financeiros da B3  e  gerar análises com um modelo do GROQ: llama-3.3-70b-versatile.
 
-A série histórica esta disponível no site da b3:
-
-https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/series-historicas/
-
-![fig_b3](https://github.com/user-attachments/assets/c798d4de-31bd-4653-aef9-65ce2208b28b)
+A série histórica é obtida via API YFinance.
 
 
 
@@ -14,7 +10,7 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 
 - Consulta de ativos da bolsa brasileira (B3)
 - Previsão dos próximos 6 meses usando o Prophet
-- Análise automática com IA (Google Gemini)
+- Análise automática com IA (GROQ)
 - Interface simples e interativa via navegador (Streamlit)
 
 
@@ -24,7 +20,6 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 - Python 3.10+
 - Streamlit
 - Prophet
-- Google Gemini API
 - Docker (opcional)
 - `.env` ou `secrets.toml` para chaves de API
 
@@ -37,8 +32,8 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 git clone https://github.com/seu-usuario/b3-app.git
 cd b3-app
 
-### 2. Crie o arquivo .env com sua chave da API Gemini
-GEMINI_API_KEY=sua-chave-aqui ! Não seu aspas ao redor da chave
+### 2. Crie o arquivo .env com sua chave da API GROQ
+GROQ_API_KEY=sua-chave-aqui ! Não seu aspas ao redor da chav
 
 ### 3. Instale as dependências
 pip install -r requirements.txt
@@ -63,7 +58,7 @@ http://localhost:8501
 ### 3. Crie um novo app apontando para seu repositório
 
 ### 4. Vá em Settings > Secrets e adicione:
-GEMINI_API_KEY = "sua-chave-aqui"
+GROQ_API_KEY = "sua-chave-aqui"
 
 ### 5. Acessar em:
 https://app-b3.streamlit.app/
