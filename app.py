@@ -28,6 +28,7 @@ st.set_page_config(page_title="Histórico de Ações B3", layout="centered")
 st.title("📊 Histórico de Ações da B3")
 #st.markdown("#### O app lê automaticamente o arquivo local COTAHIST.")
 st.markdown("#### Coleta o histórico atualizado do ticker via Yahoo Finance.")
+st.markdown("#### Conm o prophet faz uma previsão dos próximos 180 dias.")
 
 modelo = "llama-3.3-70b-versatile"
 
