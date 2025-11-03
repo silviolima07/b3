@@ -161,8 +161,6 @@ def create_llm_forecast_agent(forecast_df, ticker):
     2. Uma tabela em Markdown com os valores acima. Colunas Categoria e Valor.
     3. Uma análise textual em 2-3 parágrafos explicando a tendência, possíveis riscos e incertezas.
     4. Use o seguinte modelo de estrutura:
-    
-        templace = """ 
     # 📊 Análise de Previsão - USIM3
 
     **Data:** 03/11/2025
