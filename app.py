@@ -198,7 +198,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
             label="📥 Baixar Relatório Completo",
             data=conteudo_bytes,
             file_name=f"analise_{ticker}_{hoje.strftime('%d/%m/%Y')}.md",
-            mime="text/markdown; charset=utf-8"
+            mime="text/markdown; charset=utf-8-sig"
             #help="O relatório é gerado sob demanda e não fica armazenado no servidor"
         )
 
