@@ -58,7 +58,7 @@ def localizar_arquivo_cotahist(pasta):
 
     # Pega o mais recente (pelo ano)
     arquivos.sort(reverse=True)
-    st.write("Arquivo lido:", arquivos[0])
+    #st.write("Arquivo lido:", arquivos[0])
     return os.path.join(pasta, arquivos[0])
 
 # =============================
@@ -230,7 +230,7 @@ def gerar_relatorio_analise(data, ticker, modelo, resultado):
 # Localiza e processa arquivo
 # =============================
 arquivo_txt = localizar_arquivo_cotahist(pasta)
-st.write(arquivo_txt)
+#st.write(arquivo_txt)
 
 if arquivo_txt is None:
     st.error("⚠️ Nenhum arquivo encontrado em `./txt`. Coloque o arquivo COTAHIST_AAAAA.TXT nessa pasta.")
