@@ -194,7 +194,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
     *Relatório gerado automaticamente - Para fins educacionais*
     *Arquivo não é armazenado no servidor*
     ---
-    /template/
+    
     
     try:
         from openai import OpenAI
