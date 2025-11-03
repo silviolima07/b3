@@ -188,13 +188,15 @@ def create_llm_forecast_agent(forecast_df, ticker):
         # Gerar e oferecer download
         data = hoje.strftime('%d/%m/%Y')
         relatorio = gerar_relatorio_analise(data, ticker, modelo, result)
+        # Cria o arquivo em memória com encoding UTF-8 + BOM
+        conteudo_bytes = relatorio.encode('utf-8-sig')
         
 
         st.download_button(
             label="📥 Baixar Relatório Completo",
-            data=relatorio,
+            data=conteudo_bytes,
             file_name=f"analise_{ticker}_{hoje.strftime('%d/%m/%Y')}.md",
-            mime="text/markdown",
+            mime="text/markdown; charset=utf-8",
             help="O relatório é gerado sob demanda e não fica armazenado no servidor"
         )
 
