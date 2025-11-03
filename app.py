@@ -183,10 +183,11 @@ def create_llm_forecast_agent(forecast_df, ticker):
         result = response.choices[0].message.content
         result = response.choices[0].message.content.strip()
         result_limpo = limpar_texto_markdown(result)
+        texto_exibir = result_limpo.replace("$", "\\$")
 
         st.markdown("### 📈 Interpretação da Previsão (Groq LLM)")
         st.markdown(f"### Modelo: {modelo}")
-        st.markdown(result_limpo)
+        st.markdown(texto_exibir)
         st.warning("Disclaimer: Interpretação gerada por IA, não é aconselhamento financeiro.")
         
         result = response.choices[0].message.content
