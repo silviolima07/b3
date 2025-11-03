@@ -158,7 +158,7 @@ def create_llm_forecast_agent(forecast_df, ticker):
     1- Titulo do relatório: Análise da Ação - incluir o ticker.
     2. Uma tabela em Markdown com os valores de:
     Periodo da previsao, Tendencia geral, Maximo previsto, Minimo previsto,Intervalo médio e máximo de confiança. Colunas Categoria e Valor.
-    3. Mostrar cada parametro num paragrafo e explique o valor.
+    3. Mostrar cada parametro num paragrafo e explique o valor. Use R$ para valores de moeda.
     4- Uma paragrafo final, explicando a tendência, possíveis riscos e incertezas.
 
     """
