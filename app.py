@@ -168,16 +168,26 @@ def create_llm_forecast_agent(forecast_df, ticker):
 **Ticker:** {ticker}
 
 ## 📈 Interpretação da Previsão
-| Categoria  | Valor |
-|------------|--------|
-| Período da previsão | ... |
-| Tendência geral     | ... |
-| Máximo previsto     | ... |
-| Mínimo previsto     | ... |
+| Categoria           | Valor  |
+|---------------------|--------|
+| Período da previsão | ...    |
+| Tendência geral     | ...    |
+| Máximo previsto     | ...    |
+| Mínimo previsto     | ...    |
 | Intervalo médio de confiança | ... |
 | Intervalo máximo de confiança | ... |
 
-Análise textual...
+A análise das previsões futuras da ação USIM3 indica um cenário de crescimento acentuado no período de 04/11/2025 a 29/04/2026. 
+O modelo Prophet prevê um máximo de R$ 6.35 em 26/04/2026, o que sugere um potencial de alta significativa para os investidores. 
+No entanto, é importante considerar os riscos e incertezas inerentes a qualquer investimento em ações. O intervalo médio de confiança de R$ 1.61 e o intervalo máximo de confiança de R$ 3.66 indicam que há uma margem de erro nas previsões, o que pode afetar o desempenho real da ação.
+
+Além disso, é fundamental lembrar que as previsões baseadas em modelos estatísticos, como o Prophet, são apenas uma ferramenta para auxiliar na tomada de decisões de investimento. Outros fatores, como a saúde financeira da empresa, o setor em que atua, a concorrência e as condições econômicas gerais, também devem ser considerados. Portanto, é recomendável que os investidores realizem uma análise mais aprofundada e diversificada antes de tomar qualquer decisão de investimento na ação USIM3.
+
+Em resumo, as previsões para a ação USIM3 sugerem um cenário promissor, mas é essencial manter uma visão crítica e considerar os possíveis riscos e incertezas. Investidores devem estar preparados para ajustar suas estratégias de acordo com as mudanças no mercado e nas condições econômicas, garantindo assim uma abordagem mais segura e informada para seus investimentos.
+
+    ---
+    *Relatório gerado automaticamente - Para fins educacionais*
+    *Arquivo não é armazenado no servidor*
     """
 
     try:
